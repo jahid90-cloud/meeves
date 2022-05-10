@@ -10,6 +10,7 @@ const createApp = ({ env, config }) => {
 
     // mount routes
     app.use('/', config.homeApp);
+    app.use('/ping', config.pingApp);
     app.use('/events', config.eventsApp);
 
     console.debug('created express app');

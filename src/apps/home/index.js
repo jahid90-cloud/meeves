@@ -1,8 +1,8 @@
 const express = require('express');
 
-const createHandlers = () => {
+const createHandlers = ({ env }) => {
     const handleHome = (req, res) => {
-        res.send('Welcome!');
+        res.send('Welcome to in-memory event store!');
     };
 
     return {
@@ -11,7 +11,7 @@ const createHandlers = () => {
 };
 
 const createHomeApp = ({ env }) => {
-    const handlers = createHandlers();
+    const handlers = createHandlers({ env });
 
     const router = express.Router();
 
