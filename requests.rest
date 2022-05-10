@@ -1,4 +1,4 @@
-GET http://localhost:8080
+GET http://localhost:8080/events
 
 ###
 
@@ -6,9 +6,24 @@ POST http://localhost:8080/events HTTP/1.1
 content-type: application/json
 
 {
-    "id": "abc-123-xyz-789",
     "type": "TestEvent",
     "streamName": "test-stream",
+    "data": {
+        "key": "value"
+    },
+    "metadata": {
+        "some": "thing"
+    }
+}
+
+###
+
+POST http://localhost:8080/events HTTP/1.1
+content-type: application/json
+
+{
+    "type": "AnotherTestEvent",
+    "streamName": "another-test-stream",
     "data": {
         "key": "value"
     },

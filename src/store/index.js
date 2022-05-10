@@ -1,3 +1,5 @@
+const { v4: uuid } = require('uuid');
+
 const createStore = ({ env }) => {
     let events = [];
 
@@ -21,9 +23,9 @@ const createStore = ({ env }) => {
         return Promise.resolve(matched[lastIdx]);
     };
 
-    const addEvent = ({ id, type, streamName, data, metadata }) => {
+    const addEvent = ({ type, streamName, data, metadata }) => {
         const event = {
-            id,
+            id: uuid(),
             type,
             streamName,
             data,

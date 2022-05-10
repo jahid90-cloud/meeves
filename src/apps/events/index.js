@@ -11,6 +11,10 @@ const createActions = ({ env, store }) => {
 };
 
 const createQueries = ({ env, store }) => {
+    const fetchAllEvents = () => {
+        return store.getAllEvents();
+    };
+
     const fetchAllEventsFromStream = ({ streamName }) => {
         return store.getAllEventsFromStream({ streamName });
     };
@@ -20,6 +24,7 @@ const createQueries = ({ env, store }) => {
     };
 
     return {
+        fetchAllEvents,
         fetchAllEventsFromStream,
         fetchLastEventFromStream,
     };
@@ -27,6 +32,19 @@ const createQueries = ({ env, store }) => {
 
 const createHandlers = ({ actions, queries }) => {
     const handleViewAllEvents = (req, res) => {
+        return queries
+            .fetchAllEvents()
+            .then((events) => {
+                if (events.length === 0) {
+                    return res.status(404).send('No events were found');
+                }
+
+                return res.json(events);
+            })
+            .catch((err) => res.status(500).send('Something went wrong: ' + err.message));
+    };
+
+    const handleViewAllStreamEvents = (req, res) => {
         const { streamName } = req.params;
 
         return queries
@@ -41,7 +59,7 @@ const createHandlers = ({ actions, queries }) => {
             .catch((err) => res.status(500).send('Something went wrong: ' + err.message));
     };
 
-    const handleViewLastEvent = (req, res) => {
+    const handleViewLastStreamEvent = (req, res) => {
         const { streamName } = req.params;
 
         return queries
@@ -57,16 +75,17 @@ const createHandlers = ({ actions, queries }) => {
     };
 
     const handleAddNewEvent = (req, res) => {
-        const { id, type, streamName, data, metadata } = req.body;
+        const { type, streamName, data, metadata } = req.body;
         return actions
-            .addNewEvent({ id, type, streamName, data, metadata })
+            .addNewEvent({ type, streamName, data, metadata })
             .then(res.sendStatus(202))
             .catch((err) => res.status(500).send('Something went wrong: ' + err.message));
     };
 
     return {
         handleViewAllEvents,
-        handleViewLastEvent,
+        handleViewAllStreamEvents,
+        handleViewLastStreamEvent,
         handleAddNewEvent,
     };
 };
@@ -78,9 +97,10 @@ const createEventsApp = ({ env, store }) => {
 
     const router = express.Router();
 
-    router.get('/:streamName/all', handlers.handleViewAllEvents);
-    router.get('/:streamName/last', handlers.handleViewLastEvent);
+    router.get('/', handlers.handleViewAllEvents);
     router.post('/', handlers.handleAddNewEvent);
+    router.get('/:streamName/all', handlers.handleViewAllStreamEvents);
+    router.get('/:streamName/last', handlers.handleViewLastStreamEvent);
 
     return router;
 };
