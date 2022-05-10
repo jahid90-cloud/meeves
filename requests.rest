@@ -1,0 +1,27 @@
+GET http://localhost:8080
+
+###
+
+POST http://localhost:8080/event
+{
+    "Authorization": "userId:secret"
+}
+{
+    "id": "abc-123-xyz-789",
+    "type": "TestEvent",
+    "streamName": "test-stream",
+    "data": {
+        "key": "value",
+    },
+    "metadata": {
+        "some": "thing"
+    }
+}
+
+###
+
+GET http://localhost:8080/event/test-stream/all
+
+###
+
+GET http://localhost:8080/event/test-stream/last
