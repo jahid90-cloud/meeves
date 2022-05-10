@@ -34,8 +34,16 @@ content-type: application/json
 
 ###
 
-GET http://localhost:8080/events/test-stream/all
+GET http://localhost:8080/events/stream/test-stream
 
 ###
 
-GET http://localhost:8080/events/test-stream/last
+GET http://localhost:8080/events/stream/test-stream/last
+
+###
+
+GET http://localhost:8080/events/type/TestEvent
+
+###
+
+GET http://localhost:8080/events/cc923a44-0ac6-4f39-bdf8-5105d9a0f7db
