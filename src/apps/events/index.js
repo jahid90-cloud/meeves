@@ -78,7 +78,7 @@ const createHandlers = ({ actions, queries }) => {
         const { type, streamName, data, metadata } = req.body;
         return actions
             .addNewEvent({ type, streamName, data, metadata })
-            .then(res.sendStatus(202))
+            .then((id) => res.status(201).send(id))
             .catch((err) => res.status(500).send('Something went wrong: ' + err.message));
     };
 
