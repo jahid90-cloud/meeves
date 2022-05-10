@@ -4,7 +4,10 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "NODE_ENV=development nodemon bin/server.js"
+        "dev": "NODE_ENV=development nodemon bin/server.js",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "start": "NODE_ENV=production node bin/server.js"
     },
     "keywords": [],
     "author": "",
@@ -17,6 +20,8 @@
     },
     "devDependencies": {
         "dotenv": "^16.0.0",
-        "nodemon": "^2.0.16"
+        "jest": "^28.1.0",
+        "nodemon": "^2.0.16",
+        "supertest": "^6.2.3"
     }
 }

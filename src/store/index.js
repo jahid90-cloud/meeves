@@ -61,7 +61,7 @@ const createStore = ({ env }) => {
             return Promise.resolve(false);
         }
 
-        return Promise.resolve(matched);
+        return Promise.resolve(matched[0]);
     };
 
     return {
