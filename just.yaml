@@ -1,6 +1,14 @@
 version: 6
 variables:
 commands:
+  dev:
+    description: Start a dev server
+    steps:
+      - run: pnpm dev
+  test:
+    description: Run the tests and watch for changes
+    steps:
+      - run: pnpm test:watch
   ctr:start:
     description: Start a container
     steps:
