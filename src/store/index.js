@@ -7,21 +7,25 @@ const createStore = ({ env }) => {
     db.eventsByType = {};
 
     const addEvent = ({ type, streamName, data, metadata }) => {
+        db.eventsByStream[streamName] = db.eventsByStream[streamName] || [];
+        db.eventsByType[type] = db.eventsByType[type] || [];
+
         const id = uuid();
+        const globalPosition = db.events.length;
+        const streamPosition = db.eventsByStream[streamName].length;
+
         const event = {
             id,
             type,
             streamName,
             data,
             metadata,
+            streamPosition,
+            globalPosition,
         };
 
         db.events = [...db.events, event];
-
-        db.eventsByStream[streamName] = db.eventsByStream[streamName] || [];
         db.eventsByStream[streamName] = [...db.eventsByStream[streamName], event];
-
-        db.eventsByType[type] = db.eventsByType[type] || [];
         db.eventsByType[type] = [...db.eventsByType[type], event];
 
         return Promise.resolve(id);
