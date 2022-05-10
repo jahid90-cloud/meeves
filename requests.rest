@@ -2,16 +2,15 @@ GET http://localhost:8080
 
 ###
 
-POST http://localhost:8080/event
-{
-    "Authorization": "userId:secret"
-}
+POST http://localhost:8080/events HTTP/1.1
+content-type: application/json
+
 {
     "id": "abc-123-xyz-789",
     "type": "TestEvent",
     "streamName": "test-stream",
     "data": {
-        "key": "value",
+        "key": "value"
     },
     "metadata": {
         "some": "thing"
@@ -20,8 +19,8 @@ POST http://localhost:8080/event
 
 ###
 
-GET http://localhost:8080/event/test-stream/all
+GET http://localhost:8080/events/test-stream/all
 
 ###
 
-GET http://localhost:8080/event/test-stream/last
+GET http://localhost:8080/events/test-stream/last
