@@ -1,0 +1,28 @@
+version: '3'
+
+networks:
+  traefik:
+    name: traefik
+    driver: bridge
+
+services:
+  meeves:
+    image: registry.jahiduls.mint/meeves:current
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: meeves
+    restart: unless-stopped
+    expose:
+      - 80
+    environment:
+      - APP_NAME=Meeves App
+      - PORT=80
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.http.routers.meeves.entrypoints=websecure
+      - traefik.http.routers.meeves.rule=Host(`meeves.jahiduls.mint`)
+      - traefik.http.routers.meeves.tls=true

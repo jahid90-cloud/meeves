@@ -1,0 +1,11 @@
+version: 6
+variables:
+commands:
+  ctr:start:
+    description: Start a container
+    steps:
+      - run: docker-compose up -d
+  ctr:stop:
+    description: Stop the container
+    steps:
+      - run: docker-compose down
