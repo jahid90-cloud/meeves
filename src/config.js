@@ -1,11 +1,11 @@
-const createStore = require('./store');
+const createStore = require('@jahiduls/mem-esdb');
 
 const createEventsApp = require('./apps/events');
 const createHomeApp = require('./apps/home');
 const createPingApp = require('./apps/ping');
 
 const createConfig = ({ env }) => {
-    const store = createStore({ env });
+    const store = createStore({ enableRestServer: true });
 
     const homeApp = createHomeApp({ env });
     const pingApp = createPingApp({ env });

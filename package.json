@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "NODE_ENV=development nodemon bin/server.js",
+        "dev": "NODE_ENV=development nodemon bin/server.js -colors",
         "test": "jest",
         "test:watch": "jest --watch",
         "start": "NODE_ENV=production node bin/server.js"
@@ -13,7 +13,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "axios": "^0.27.2",
+        "@jahiduls/mem-esdb": "https://gitpkg.now.sh/jahid90/libs/mem-esdb?main",
         "body-parser": "^1.20.0",
         "express": "^4.18.1",
         "uuid": "^8.3.2"
@@ -21,7 +21,7 @@
     "devDependencies": {
         "dotenv": "16.0.1",
         "jest": "28.1.0",
-        "nodemon": "2.0.16",
+        "nodemon": "^2.0.16",
         "supertest": "6.2.3"
     }
 }
