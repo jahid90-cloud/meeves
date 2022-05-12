@@ -27,6 +27,10 @@ const createQueries = ({ env, store }) => {
         return store.getAllEventsOfType({ type });
     };
 
+    const fetchAllEventsFromCategory = ({ category }) => {
+        return store.getAllEventsFromCategory({ category });
+    };
+
     const fetchEvent = ({ id }) => {
         return store.getEventDetail({ id });
     };
@@ -36,6 +40,7 @@ const createQueries = ({ env, store }) => {
         fetchAllEventsFromStream,
         fetchLastEventFromStream,
         fetchAllEventsByType,
+        fetchAllEventsFromCategory,
         fetchEvent,
     };
 };
@@ -105,6 +110,19 @@ const createHandlers = ({ actions, queries }) => {
             .catch((err) => res.status(500).send('something went wrong: ' + err.message));
     };
 
+    const handleViewAllCategoryEvents = (req, res) => {
+        const { category } = req.params;
+        return queries
+            .fetchAllEventsFromCategory({ category })
+            .then((events) => {
+                if (events.length === 0) {
+                    return res.status(404).send('no events were found');
+                }
+                return res.json(events);
+            })
+            .catch((err) => res.status(500).send('something went wrong: ' + err.message));
+    };
+
     const handleViewEvent = (req, res) => {
         const { id } = req.params;
         return queries
@@ -124,6 +142,7 @@ const createHandlers = ({ actions, queries }) => {
         handleViewAllStreamEvents,
         handleViewLastStreamEvent,
         handleViewAllEventsByType,
+        handleViewAllCategoryEvents,
         handleViewEvent,
     };
 };
@@ -140,6 +159,7 @@ const createEventsApp = ({ env, store }) => {
     router.get('/stream/:streamName', handlers.handleViewAllStreamEvents);
     router.get('/stream/:streamName/last', handlers.handleViewLastStreamEvent);
     router.get('/type/:type', handlers.handleViewAllEventsByType);
+    router.get('/category/:category', handlers.handleViewAllCategoryEvents);
     router.get('/:id', handlers.handleViewEvent);
 
     return router;
