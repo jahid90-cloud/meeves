@@ -17,3 +17,7 @@ commands:
     description: Stop the container
     steps:
       - run: docker-compose down
+  ctr:rebuild:
+    description: Rebuild the container
+    steps:
+      - run: docker-compose up -d --build

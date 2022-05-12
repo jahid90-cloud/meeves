@@ -16,6 +16,7 @@
         "@jahiduls/mem-esdb": "https://gitpkg.now.sh/jahid90/libs/mem-esdb?main",
         "body-parser": "^1.20.0",
         "express": "^4.18.1",
+        "morgan": "^1.10.0",
         "uuid": "^8.3.2"
     },
     "devDependencies": {
