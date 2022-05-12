@@ -206,7 +206,7 @@ describe('GET /events/:id', () => {
                 expect(res.body.data).toEqual(TEST_EVENT_2.data);
                 expect(res.body.metadata).toEqual(TEST_EVENT_2.metadata);
                 expect(res.body.streamPosition).toBe(1);
-                expect(res.body.globalPosition).toBe(1);
+                expect(res.body.globalPosition).toBe(2);
             });
     });
 });
