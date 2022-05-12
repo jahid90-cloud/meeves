@@ -18,6 +18,7 @@ services:
     environment:
       - APP_NAME=Meeves App
       - PORT=80
+      - ENABLE_STORE_REST_SERVER=true
     networks:
       - traefik
     labels:

@@ -5,7 +5,7 @@ const createHomeApp = require('./apps/home');
 const createPingApp = require('./apps/ping');
 
 const createConfig = ({ env }) => {
-    const store = createStore({ enableRestServer: true });
+    const store = createStore({ enableRestServer: env.enableStoreRestServer });
 
     const homeApp = createHomeApp({ env });
     const pingApp = createPingApp({ env });
