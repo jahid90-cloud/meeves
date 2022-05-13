@@ -2,6 +2,7 @@ const supertest = require('supertest');
 
 const testEnv = {
     appName: 'meeves test',
+    enableStoreRestServer: false,
 };
 
 const createConfig = require('../src/config');
