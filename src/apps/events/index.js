@@ -5,18 +5,28 @@ const createActions = ({ env, store }) => {
         return store.addEvent({ id, type, streamName, data, metadata });
     };
 
+    const deleteEvent = ({ id }) => {
+        return store.deleteEvent({ id });
+    };
+
     return {
         addNewEvent,
+        deleteEvent,
     };
 };
 
 const createQueries = ({ env, store }) => {
-    const fetchAllEvents = () => {
-        return store.getAllEvents();
+    const fetchAllEvents = (fromPosition, full) => {
+        if (full || full === '') {
+            return store
+                .getAllEvents(fromPosition)
+                .then((ids) => Promise.all(ids.map((id) => store.getEventDetail({ id }))));
+        }
+        return store.getAllEvents(fromPosition);
     };
 
-    const fetchAllEventsFromStream = ({ streamName }) => {
-        return store.getAllEventsFromStream({ streamName });
+    const fetchAllEventsFromStream = ({ streamName, fromPosition }) => {
+        return store.getAllEventsFromStream({ streamName, fromPosition });
     };
 
     const fetchLastEventFromStream = ({ streamName }) => {
@@ -27,8 +37,12 @@ const createQueries = ({ env, store }) => {
         return store.getAllEventsOfType({ type });
     };
 
-    const fetchAllEventsFromCategory = ({ category }) => {
-        return store.getAllEventsFromCategory({ category });
+    const fetchAllEventsFromCategory = ({ category, fromPosition }) => {
+        return store.getAllEventsFromCategory({ category, fromPosition });
+    };
+
+    const fetchMetadataMatchingEvents = ({ attrName, attrValue }) => {
+        return store.getAllEventsMatchingMetadataAttr({ attrName, attrValue });
     };
 
     const fetchEvent = ({ id }) => {
@@ -41,6 +55,7 @@ const createQueries = ({ env, store }) => {
         fetchLastEventFromStream,
         fetchAllEventsByType,
         fetchAllEventsFromCategory,
+        fetchMetadataMatchingEvents,
         fetchEvent,
     };
 };
@@ -54,9 +69,20 @@ const createHandlers = ({ actions, queries }) => {
             .catch((err) => res.status(500).send('something went wrong: ' + err.message));
     };
 
+    const handleDeleteEvent = (req, res) => {
+        const id = req.params;
+
+        return actions
+            .deleteEvent({ id })
+            .then(() => res.sendStatus(204))
+            .catch((err) => res.status(500).send('something went wrong: ' + err.message));
+    };
+
     const handleViewAllEvents = (req, res) => {
+        const { full, fromPosition } = req.query;
+
         return queries
-            .fetchAllEvents()
+            .fetchAllEvents(fromPosition ? parseInt(fromPosition) : 0, full)
             .then((events) => {
                 if (events.length === 0) {
                     return res.status(404).send('no events were found');
@@ -69,9 +95,10 @@ const createHandlers = ({ actions, queries }) => {
 
     const handleViewAllStreamEvents = (req, res) => {
         const { streamName } = req.params;
+        const { fromPosition } = req.query;
 
         return queries
-            .fetchAllEventsFromStream({ streamName })
+            .fetchAllEventsFromStream({ streamName, fromPosition: fromPosition ? parseInt(fromPosition) : 0 })
             .then((events) => {
                 if (events.length === 0) {
                     return res.status(404).send('no events were found');
@@ -112,8 +139,23 @@ const createHandlers = ({ actions, queries }) => {
 
     const handleViewAllCategoryEvents = (req, res) => {
         const { category } = req.params;
+        const { fromPosition } = req.query;
+
         return queries
-            .fetchAllEventsFromCategory({ category })
+            .fetchAllEventsFromCategory({ category, fromPosition: fromPosition ? parseInt(fromPosition) : 0 })
+            .then((events) => {
+                if (events.length === 0) {
+                    return res.status(404).send('no events were found');
+                }
+                return res.json(events);
+            })
+            .catch((err) => res.status(500).send('something went wrong: ' + err.message));
+    };
+
+    const handleMetadataMatchingEvents = (req, res) => {
+        const { attr, value } = req.params;
+        return queries
+            .fetchMetadataMatchingEvents({ attrName: attr, attrValue: value })
             .then((events) => {
                 if (events.length === 0) {
                     return res.status(404).send('no events were found');
@@ -138,11 +180,13 @@ const createHandlers = ({ actions, queries }) => {
 
     return {
         handleAddNewEvent,
+        handleDeleteEvent,
         handleViewAllEvents,
         handleViewAllStreamEvents,
         handleViewLastStreamEvent,
         handleViewAllEventsByType,
         handleViewAllCategoryEvents,
+        handleMetadataMatchingEvents,
         handleViewEvent,
     };
 };
@@ -154,13 +198,15 @@ const createEventsApp = ({ env, store }) => {
 
     const router = express.Router();
 
-    router.get('/', handlers.handleViewAllEvents);
     router.post('/', handlers.handleAddNewEvent);
+    router.delete('/:id', handlers.handleDeleteEvent);
+    router.get('/', handlers.handleViewAllEvents);
+    router.get('/:id', handlers.handleViewEvent);
     router.get('/stream/:streamName', handlers.handleViewAllStreamEvents);
     router.get('/stream/:streamName/last', handlers.handleViewLastStreamEvent);
     router.get('/type/:type', handlers.handleViewAllEventsByType);
     router.get('/category/:category', handlers.handleViewAllCategoryEvents);
-    router.get('/:id', handlers.handleViewEvent);
+    router.get('/metadata/:attr/:value', handlers.handleMetadataMatchingEvents);
 
     return router;
 };
