@@ -15,3 +15,8 @@ Meeves is an in-MEmory EVEnt Store
 - GET /events/type/:type
 - GET /events/:id
 ```
+
+### TODO
+
+- Support multiple in-memory stores
+- Add feature to provide store name during request to query specific in-memory store

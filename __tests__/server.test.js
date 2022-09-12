@@ -5,6 +5,15 @@ const testEnv = {
     enableStoreRestServer: false,
 };
 
+// global setup
+if (console) {
+    console.debug = () => {};
+    console.info = () => {};
+    console.log = () => {};
+    console.warn = () => {};
+    console.error = () => {};
+}
+
 const createConfig = require('../src/config');
 const createApp = require('../src/express');
 
@@ -42,6 +51,8 @@ describe('GET /ping', () => {
     it('responds with ok', async () => {
         await supertest(app)
             .get('/ping')
+            .set('x-client-id', 'supertest')
+            .set('x-request-id', '1')
             .expect(200)
             .then((res) => {
                 expect(res.text).toBe('OK');
@@ -61,6 +72,8 @@ describe('POST /events', () => {
     it('creates an event', async () => {
         await supertest(app)
             .post('/events')
+            .set('x-client-id', 'supertest')
+            .set('x-request-id', '2')
             .send(TEST_EVENT_1)
             .expect(201)
             .then((res) => {
@@ -84,6 +97,8 @@ describe('GET /events', () => {
     it('retrieves all the events', async () => {
         await supertest(app)
             .get('/events')
+            .set('x-client-id', 'supertest')
+            .set('x-request-id', '3')
             .expect(200)
             .then((res) => {
                 expect(res.body.length).toBe(2);
@@ -107,6 +122,8 @@ describe('GET /events/stream/:streamName', () => {
     it('retrieves all the events from a stream', async () => {
         await supertest(app)
             .get(`/events/stream/${TEST_EVENT_2.streamName}`)
+            .set('x-client-id', 'supertest')
+            .set('x-request-id', '4')
             .expect(200)
             .then((res) => {
                 expect(res.body.length).toBe(1);
@@ -146,6 +163,8 @@ describe('GET /events/stream/:streamName/last', () => {
     it('retrieves the last event from a stream', async () => {
         await supertest(app)
             .get(`/events/stream/${TEST_EVENT_1.streamName}/last`)
+            .set('x-client-id', 'supertest')
+            .set('x-request-id', '5')
             .expect(200)
             .then((res) => {
                 expect(res.body).toBe(generatedIds[2]);
@@ -169,6 +188,8 @@ describe('GET /events/type/:type', () => {
     it('retrieves all the events by type', async () => {
         await supertest(app)
             .get(`/events/type/${TEST_EVENT_1.type}`)
+            .set('x-client-id', 'supertest')
+            .set('x-request-id', '6')
             .expect(200)
             .then((res) => {
                 expect(res.body.length).toBe(2);
@@ -195,6 +216,8 @@ describe('GET /events/:id', () => {
     it('retrieves the details of an event', async () => {
         await supertest(app)
             .get(`/events/stream/${TEST_EVENT_2.streamName}/last`)
+            .set('x-client-id', 'supertest')
+            .set('x-request-id', '7')
             .expect(200)
             .then((res) => {
                 // The id returned is a string within quotes; remove quotes to extract id
